@@ -333,6 +333,14 @@ export const api = {
     });
   },
 
+  /**
+   * Получить результаты диагностики из БД (не localStorage).
+   * Работает даже после перезапуска Mini App.
+   */
+  async getDiagnosticResult() {
+    return request(`/onboarding/diagnostic-result/${getTelegramId()}`);
+  },
+
   async saveProfile(profileData) {
     return request('/onboarding/save-profile', {
       method: 'POST',
