@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { api, isInsideTelegram, getTelegramId } from './client'
+import { api, isInsideTelegram, getTelegramId } from '../api/client'
 
 /**
  * Хук для авторизации и инициализации пользователя через Telegram.
