@@ -22,24 +22,64 @@ export default function DiagnosticTest() {
   }
 
   useEffect(() => {
-    // Сначала проверяем localStorage — вдруг тест уже пройден
-    const storedResults = localStorage.getItem('diagnostic_results')
-    if (storedResults) {
-      try {
-        const parsed = JSON.parse(storedResults)
-        if (parsed.recommended_roles && parsed.recommended_roles.length > 0) {
-          console.log('✅ Found existing diagnostic results, showing them')
-          setResults(parsed)
-          setLoading(false)
-          return // Не запускаем тест заново
+    // Сначала проверяем БД — есть ли уже пройденный тест
+    checkExistingResults()
+  }, [])
+
+  async function checkExistingResults() {
+    try {
+      // Проверяем профиль в БД
+      const profileData = await api.getProfile()
+      if (profileData.exists) {
+        const profile = profileData.profile || {}
+        const hasField = profile.field && profile.field.trim().length > 0
+        const hasInterests = (profile.interests || []).length > 0
+        const hasSkills = (profile.skills || []).length > 0
+        const hasGoals = (profile.career_goals || []).length > 0
+        
+        // Если профиль заполнен — значит тест уже пройден
+        if (hasField || hasInterests || hasSkills || hasGoals) {
+          console.log('✅ User already has profile data, loading results...')
+          // Пробуем загрузить результаты через quick match
+          try {
+            const rolesResult = await api.quickMatch()
+            if (rolesResult.roles && rolesResult.roles.length > 0) {
+              // Показываем результаты как будто тест пройден
+              setResults({
+                top_categories: [],
+                recommended_roles: rolesResult.roles,
+              })
+              setLoading(false)
+              return
+            }
+          } catch (e) {
+            console.warn('Failed to load roles, showing test:', e)
+          }
         }
-      } catch (e) {
-        console.error('Failed to parse stored results:', e)
       }
+      
+      // Проверяем localStorage как fallback
+      const storedResults = localStorage.getItem('diagnostic_results')
+      if (storedResults) {
+        try {
+          const parsed = JSON.parse(storedResults)
+          if (parsed.recommended_roles && parsed.recommended_roles.length > 0) {
+            console.log('✅ Found existing diagnostic results in localStorage')
+            setResults(parsed)
+            setLoading(false)
+            return
+          }
+        } catch (e) {
+          console.error('Failed to parse stored results:', e)
+        }
+      }
+    } catch (err) {
+      console.error('Failed to check existing results:', err)
     }
     
+    // Нет результатов — запускаем тест
     loadQuestions()
-  }, [])
+  }
 
   async function loadQuestions() {
     try {
