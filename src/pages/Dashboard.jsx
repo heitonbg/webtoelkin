@@ -102,7 +102,7 @@ export default function Dashboard() {
     return (
       <div>
         <div className="page-header">
-          <h1>🧠 Career Navigator</h1>
+          <h1>🧠 CareerFlow</h1>
           <p>Твой карьерный навигатор</p>
         </div>
         <div style={{ padding: 16 }}>

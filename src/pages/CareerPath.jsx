@@ -17,23 +17,7 @@ export default function CareerPath() {
 
   async function loadData() {
     try {
-      const profileData = await api.getProfile()
-      if (!profileData.exists) {
-        navigate('/diagnostic')
-        return
-      }
-
-      const profile = profileData.profile || {}
-      const hasField = profile.field && profile.field.trim().length > 0
-      const hasInterests = (profile.interests || []).length > 0
-      const hasSkills = (profile.skills || []).length > 0
-      const hasGoals = (profile.career_goals || []).length > 0
-
-      if (!hasField && !hasInterests && !hasSkills && !hasGoals) {
-        navigate('/diagnostic')
-        return
-      }
-
+      // Сначала проверяем localStorage — вдруг тест уже пройден
       const storedResults = localStorage.getItem('diagnostic_results')
       if (storedResults) {
         try {
@@ -47,6 +31,31 @@ export default function CareerPath() {
           }
         } catch (e) {
           console.error('Failed to parse diagnostic results:', e)
+        }
+      }
+
+      // Если нет результатов — проверяем профиль в БД
+      const profileData = await api.getProfile()
+      if (!profileData.exists) {
+        navigate('/diagnostic')
+        return
+      }
+
+      const profile = profileData.profile || {}
+      const hasField = profile.field && profile.field.trim().length > 0
+      const hasInterests = (profile.interests || []).length > 0
+      const hasSkills = (profile.skills || []).length > 0
+      const hasGoals = (profile.career_goals || []).length > 0
+
+      if (!hasField && !hasInterests && !hasSkills && !hasGoals) {
+        // Если есть результаты в localStorage — показываем их
+        if (storedResults) {
+          // Пытаемся загрузить роли через API
+          const rolesResult = await api.matchRoles()
+          setMatchedRoles(rolesResult.roles || [])
+        } else {
+          navigate('/diagnostic')
+          return
         }
       }
 

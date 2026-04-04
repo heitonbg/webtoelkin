@@ -22,6 +22,22 @@ export default function DiagnosticTest() {
   }
 
   useEffect(() => {
+    // Сначала проверяем localStorage — вдруг тест уже пройден
+    const storedResults = localStorage.getItem('diagnostic_results')
+    if (storedResults) {
+      try {
+        const parsed = JSON.parse(storedResults)
+        if (parsed.recommended_roles && parsed.recommended_roles.length > 0) {
+          console.log('✅ Found existing diagnostic results, showing them')
+          setResults(parsed)
+          setLoading(false)
+          return // Не запускаем тест заново
+        }
+      } catch (e) {
+        console.error('Failed to parse stored results:', e)
+      }
+    }
+    
     loadQuestions()
   }, [])
 
