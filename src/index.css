@@ -1,0 +1,759 @@
+:root {
+  /* Telegram theme variables (for compatibility) */
+  --tg-theme-bg-color: #ffffff;
+  --tg-theme-text-color: #000000;
+  --tg-theme-hint-color: #999999;
+  --tg-theme-link-color: #E30611;
+  --tg-theme-button-color: #E30611;
+  --tg-theme-button-text-color: #ffffff;
+  --tg-theme-secondary-bg-color: #f5f5f5;
+  --tg-theme-header-bg-color: #ffffff;
+  --tg-theme-accent-text-color: #E30611;
+  --tg-theme-section-bg-color: #ffffff;
+  --tg-theme-section-header-text-color: #E30611;
+  --tg-theme-subtitle-text-color: #999999;
+  --tg-theme-destructive-text-color: #EF4444;
+
+  /* MTS Fresh Colors */
+  --mts-red: #E30611;          /* MTS бренд */
+  --mts-red-soft: #DC2626;     /* Мягкий красный — приглушённый */
+  --mts-red-muted: #991B1B;    /* Тёмный приглушённый */
+  --mts-red-light: #FECACA;    /* Светлый для фонов */
+  --mts-red-dark: #7F1D1D;
+  --mts-red-bg: #FEF2F2;       /* Очень светлый тёплый фон */
+  
+  /* Тёмная тема для тестов */
+  --dark-bg: #27272A;          /* Тёплый тёмно-серый (zinc-800) */
+  --dark-bg-light: #3F3F46;    /* Чуть светлее (zinc-700) */
+  --dark-text: #F4F4F5;        /* Почти белый */
+  --dark-text-muted: #A1A1AA;  /* Серый текст */
+  
+  --primary: #E30611;          /* MTS красный — основной */
+  --primary-soft: #DC2626;     /* Мягкая версия */
+  --primary-muted: #B91C1C;    /* Приглушённая для кнопок */
+  --primary-light: #FECACA;
+  --primary-dark: #991B1B;
+  
+  --mts-dark: #18181B;
+  --mts-gray: #71717A;
+  --mts-gray-light: #E4E4E7;
+
+  --success: #10B981;
+  --warning: #F59E0B;
+  --danger: #EF4444;
+  
+  /* Градиенты */
+  --gradient: linear-gradient(135deg, #E30611 0%, #DC2626 100%);
+  --gradient-soft: linear-gradient(135deg, #991B1B 0%, #7F1D1D 100%);
+  --gradient-subtle: linear-gradient(180deg, #FEF2F2 0%, #FFFFFF 100%);
+  --gradient-dark: linear-gradient(180deg, #27272A 0%, #1F1F23 100%);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  background: #18181B;
+  color: var(--dark-text, #F4F4F5);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+.app {
+  min-height: 100vh;
+  padding-bottom: 70px;
+  background: #18181B;
+  position: relative;
+  /* Плавный переход фона при смене страниц */
+  transition: background-color 0.4s ease;
+}
+
+/* Красное свечение сверху на всех страницах */
+.app::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 500px;
+  background: radial-gradient(ellipse at top, rgba(227, 6, 17, 0.12) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Нижняя навигация — тёмная */
+.bottom-nav {
+  background: #27272A;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+.bottom-nav-item.active {
+  color: var(--primary);
+}
+
+/* ===== Typography ===== */
+h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: var(--dark-text);
+}
+
+h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--dark-text);
+}
+
+h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  color: var(--dark-text);
+}
+
+.text-sm {
+  font-size: 0.875rem;
+  color: var(--dark-text-muted);
+}
+
+.text-muted {
+  color: var(--dark-text-muted);
+}
+
+/* ===== Карточки (тёмная тема) ===== */
+.card {
+  background: var(--dark-bg-light);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2), 0 4px 12px rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+
+.card:hover {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.2);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+/* ===== Buttons ===== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+}
+
+.btn-primary {
+  background: var(--primary-muted);
+  color: white;
+  box-shadow: 0 4px 12px rgba(185, 28, 28, 0.15);
+}
+
+.btn-primary:hover {
+  background: var(--primary-soft);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(227, 6, 17, 0.2);
+}
+
+.btn-primary:active {
+  background: var(--primary-dark);
+  transform: translateY(0);
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--dark-text);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.btn-outline {
+  background: transparent;
+  border: 2px solid var(--primary);
+  color: var(--primary);
+}
+
+/* ===== Progress Bar ===== */
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--primary);
+  border-radius: 4px;
+  transition: width 0.5s ease;
+  box-shadow: 0 2px 8px rgba(227, 6, 17, 0.2);
+}
+
+/* ===== Tags ===== */
+.tag {
+  display: inline-block;
+  padding: 4px 12px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--dark-text);
+  border-radius: 20px;
+  font-size: 0.8rem;
+  margin: 4px;
+  transition: all 0.2s;
+}
+
+.tag:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.tag-primary {
+  background: rgba(227, 6, 17, 0.2);
+  color: var(--primary-light);
+  font-weight: 500;
+}
+
+/* ===== Loading ===== */
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  box-shadow: 0 0 10px rgba(227, 6, 17, 0.15);
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ===== Bottom Navigation ===== */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-around;
+  background: #27272A;
+  padding: 8px 0;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  z-index: 100;
+}
+
+.bottom-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: var(--dark-text-muted);
+  font-size: 0.7rem;
+  padding: 4px 8px;
+  transition: color 0.2s;
+}
+
+.bottom-nav-item.active {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.bottom-nav-item.active .bottom-nav-icon {
+  transform: scale(1.1);
+}
+
+.bottom-nav-icon {
+  font-size: 1.5rem;
+  margin-bottom: 2px;
+}
+
+/* ===== Page Header (тёмная тема) ===== */
+.page-header {
+  background: var(--dark-bg);
+  color: white;
+  padding: 24px 16px 36px;
+  border-radius: 0 0 28px 28px;
+  margin-bottom: -10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  z-index: 1;
+}
+
+.page-header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at top, rgba(227, 6, 17, 0.3) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.page-header::after {
+  content: '';
+  position: absolute;
+  bottom: -30%;
+  left: -10%;
+  width: 150px;
+  height: 150px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.page-header h1 {
+  margin: 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  position: relative;
+  z-index: 1;
+}
+
+.page-header p {
+  opacity: 0.8;
+  margin-top: 4px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ===== Vacancy Card (тёмная тема) ===== */
+.vacancy-card {
+  background: var(--dark-bg-light);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2), 0 4px 12px rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.2s;
+}
+
+.vacancy-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(227, 6, 17, 0.1);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.vacancy-title {
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-bottom: 4px;
+  color: var(--dark-text);
+}
+
+.vacancy-company {
+  color: var(--dark-text-muted);
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+}
+
+.vacancy-salary {
+  font-weight: 600;
+  color: var(--success);
+  margin-bottom: 8px;
+}
+
+.vacancy-match {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.vacancy-match-high {
+  background: rgba(0, 184, 148, 0.15);
+  color: var(--success);
+}
+
+.vacancy-match-medium {
+  background: rgba(253, 203, 110, 0.15);
+  color: #e17055;
+}
+
+.vacancy-match-low {
+  background: rgba(225, 112, 85, 0.15);
+  color: var(--danger);
+}
+
+/* ===== Chat ===== */
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 140px);
+}
+
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+}
+
+.chat-message {
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-message.user {
+  align-items: flex-end;
+}
+
+.chat-message.ai {
+  align-items: flex-start;
+}
+
+.chat-bubble {
+  max-width: 80%;
+  padding: 12px 16px;
+  border-radius: 16px;
+  word-wrap: break-word;
+}
+
+.chat-message.user .chat-bubble {
+  background: var(--primary);
+  color: white;
+  border-bottom-right-radius: 4px;
+  box-shadow: 0 2px 8px rgba(227, 6, 17, 0.15);
+}
+
+.chat-message.ai .chat-bubble {
+  background: var(--dark-bg-light);
+  color: var(--dark-text);
+  border-bottom-left-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.chat-input-container {
+  display: flex;
+  gap: 8px;
+  padding: 12px 16px;
+  background: #27272A;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.chat-input {
+  flex: 1;
+  padding: 12px 16px;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--dark-bg-light);
+  color: var(--dark-text);
+  font-size: 1rem;
+  outline: none;
+}
+
+.chat-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(227, 6, 17, 0.15);
+}
+
+.chat-send-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--primary);
+  border: none;
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(227, 6, 17, 0.25);
+}
+
+.chat-send-btn:hover:not(:disabled) {
+  transform: scale(1.05);
+  background: var(--primary-soft);
+  box-shadow: 0 4px 12px rgba(227, 6, 17, 0.35);
+}
+
+.chat-send-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ===== Onboarding (тёмная тема) ===== */
+.onboarding-container {
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: 24px 16px;
+  background: transparent;
+  color: var(--dark-text);
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+/* Красное свечение на onboarding поверх общего */
+.onboarding-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 350px;
+  background: radial-gradient(ellipse at top, rgba(227, 6, 17, 0.1) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.onboarding-container::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 200px;
+  background: radial-gradient(ellipse at bottom, rgba(227, 6, 17, 0.06) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.onboarding-step {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.onboarding-question {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 24px;
+  text-align: center;
+  color: #FFFFFF;
+  /* Тень текста — отделяет от фона */
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.3);
+  /* Лёгкая подложка — визуально выделяет */
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 16px;
+  padding: 16px 20px;
+  margin-left: -8px;
+  margin-right: -8px;
+}
+
+.onboarding-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.onboarding-option {
+  padding: 10px 20px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  color: var(--dark-text);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.95rem;
+}
+
+.onboarding-option:hover {
+  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.onboarding-option.selected {
+  background: var(--primary-muted);
+  color: white;
+  border-color: transparent;
+  box-shadow: 0 4px 12px rgba(185, 28, 28, 0.35);
+}
+
+/* ===== Situation Input (текстовое поле ситуации) ===== */
+.situation-input {
+  width: 100%;
+  padding: 14px 18px;
+  border-radius: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--dark-text);
+  font-size: 0.95rem;
+  font-family: inherit;
+  line-height: 1.5;
+  outline: none;
+  resize: vertical;
+  min-height: 100px;
+  transition: all 0.2s;
+}
+
+.situation-input::placeholder {
+  color: var(--dark-text-muted);
+}
+
+.situation-input:focus {
+  border-color: rgba(168, 85, 247, 0.5);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.15);
+}
+
+.onboarding-input {
+  width: 100%;
+  padding: 14px 20px;
+  border-radius: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  background: var(--dark-bg-light);
+  color: var(--dark-text);
+  font-size: 1rem;
+  outline: none;
+  margin-bottom: 16px;
+}
+
+.onboarding-input::placeholder {
+  color: var(--dark-text-muted);
+}
+
+.onboarding-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(227, 6, 17, 0.15);
+}
+
+.onboarding-nav {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.onboarding-nav .btn {
+  flex: 1;
+}
+
+/* ===== Career Path ===== */
+.career-step {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.career-step-number {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(227, 6, 17, 0.25);
+  transition: transform 0.2s;
+}
+
+.career-step:hover .career-step-number {
+  transform: scale(1.1);
+  background: var(--primary-soft);
+}
+
+.career-step-content {
+  flex: 1;
+}
+
+.career-step-title {
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-bottom: 4px;
+}
+
+.career-step-duration {
+  color: var(--primary);
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.career-step-desc {
+  color: var(--dark-text-muted);
+  font-size: 0.9rem;
+}
+
+/* ===== Profession Card (тёмная тема) ===== */
+.profession-card {
+  background: var(--dark-bg-light);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2), 0 4px 12px rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.2s;
+}
+
+.profession-card:hover {
+  transform: translateX(4px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(227, 6, 17, 0.1);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.profession-title {
+  font-weight: 600;
+  font-size: 1.2rem;
+  margin-bottom: 8px;
+  color: var(--dark-text);
+}
+
+.profession-match {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.profession-reason {
+  color: var(--tg-theme-hint-color, #666);
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+}
+
+.profession-salary {
+  color: var(--success);
+  font-weight: 600;
+  font-size: 0.95rem;
+}
