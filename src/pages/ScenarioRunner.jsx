@@ -38,8 +38,8 @@ export default function ScenarioRunner() {
   useEffect(() => {
     console.log(' ScenarioRunner mounted, roles:', roles)
     if (roles.length === 0) {
-      console.warn('⚠️ No roles, redirecting to diagnostic')
-      navigate('/diagnostic')
+      console.warn('⚠️ No roles, showing fallback')
+      setLoading(false) // Не редиректим, показываем fallback
       return
     }
     loadScenarios()
@@ -66,8 +66,8 @@ export default function ScenarioRunner() {
       }
 
       if (loaded.length === 0) {
-        console.error('❌ No scenarios loaded, redirecting to diagnostic')
-        navigate('/diagnostic')
+        console.error('❌ No scenarios loaded, showing fallback')
+        setLoading(false)
         return
       }
 
@@ -177,12 +177,22 @@ export default function ScenarioRunner() {
     return <div className="loading"><div className="spinner" /></div>
   }
 
-  if (scenarios.length === 0) {
+  if (scenarios.length === 0 || roles.length === 0) {
     return (
-      <div style={{ textAlign: 'center', padding: 40 }}>
-        <div style={{ fontSize: '4rem', marginBottom: 16 }}>😕</div>
-        <h2>Нет ситуаций для выбранных ролей</h2>
-        <button className="btn btn-primary" onClick={() => navigate('/diagnostic')}>← Пройти диагностику</button>
+      <div className="onboarding-container">
+        <div style={{ textAlign: 'center', padding: 40 }}>
+          <div style={{ fontSize: '4rem', marginBottom: 16 }}>📋</div>
+          <h2 style={{ color: 'var(--dark-text)' }}>Нет доступных сценариев</h2>
+          <p style={{ color: 'var(--dark-text-muted)', marginBottom: 24 }}>
+            Для выбранных ролей пока нет сценариев. Попробуй выбрать другие профессии.
+          </p>
+          <button className="btn btn-primary" onClick={() => navigate('/diagnostic')} style={{ marginRight: 8 }}>
+            ← К результатам теста
+          </button>
+          <button className="btn" onClick={() => navigate('/career')} style={{ background: 'rgba(255,255,255,0.1)', color: 'var(--dark-text)' }}>
+            На главную
+          </button>
+        </div>
       </div>
     )
   }
