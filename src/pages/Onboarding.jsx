@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { api } from '../api/client'
+import { api, getTelegramId } from '../api/client'
 
 // Упрощённый онбординг: 3 шага → AI-роли
 const STEPS = [
@@ -120,7 +120,7 @@ export default function Onboarding() {
     setFading(true)
     try {
       const payload = {
-        telegram_id: 'demo_user',
+        telegram_id: getTelegramId(),
         education: finalData.education,
         field: finalData.profession,
         experience: finalData.experience,

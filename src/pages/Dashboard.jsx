@@ -110,10 +110,10 @@ export default function Dashboard() {
             <div style={{ fontSize: '4rem', marginBottom: 16 }}>👋</div>
             <h2>Добро пожаловать!</h2>
             <p style={{ color: 'var(--dark-text-muted)', marginBottom: 24, lineHeight: 1.5 }}>
-              Узнай подходящие роли, пройди тестирование и получи персональный карьерный план
+              Ответь на 10 вопросов и мы подберём подходящие профессии из 197 доступных
             </p>
-            <button className="btn btn-primary" onClick={() => navigate('/role-selection')}>
-              🚀 Начать
+            <button className="btn btn-primary" onClick={() => navigate('/diagnostic')}>
+              🚀 Пройти диагностику
             </button>
           </div>
         </div>
