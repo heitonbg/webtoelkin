@@ -17,7 +17,20 @@ export default function CareerPath() {
 
   async function loadData() {
     try {
-      // Сначала проверяем localStorage — вдруг тест уже пройден
+      // 1. Сначала проверяем БД — есть ли сохранённые результаты диагностики
+      const dbResult = await api.getDiagnosticResult()
+      if (dbResult.exists && dbResult.result?.recommended_roles?.length > 0) {
+        console.log('✅ Found diagnostic results in DB, showing them')
+        setMatchedRoles(dbResult.result.recommended_roles)
+        try {
+          const stats = await api.getMyScenarioStats()
+          setScenarioStats(stats.results || [])
+        } catch (e) { /* ignore */ }
+        setLoading(false)
+        return
+      }
+
+      // 2. Проверяем localStorage как fallback
       const storedResults = localStorage.getItem('diagnostic_results')
       if (storedResults) {
         try {
@@ -34,36 +47,8 @@ export default function CareerPath() {
         }
       }
 
-      // Проверяем профиль в БД
-      const profileData = await api.getProfile()
-      if (profileData.exists) {
-        const profile = profileData.profile || {}
-        const hasField = profile.field && profile.field.trim().length > 0
-        const hasInterests = (profile.interests || []).length > 0
-        const hasSkills = (profile.skills || []).length > 0
-        const hasGoals = (profile.career_goals || []).length > 0
-
-        if (hasField || hasInterests || hasSkills || hasGoals) {
-          // Профиль заполнен — загружаем роли
-          const rolesResult = await api.matchRoles()
-          setMatchedRoles(rolesResult.roles || [])
-          const stats = await api.getMyScenarioStats()
-          setScenarioStats(stats.results || [])
-
-          try {
-            const streak = await api.getDailyStreak()
-            setDailyStreak(streak)
-          } catch (e) {
-            // ignore
-          }
-
-          setLoading(false)
-          return
-        }
-      }
-
-      // Профиль пустой — показываем приглашение пройти тест
-      console.log('📋 Profile empty, showing onboarding prompt')
+      // 3. Ничего нет — показываем приглашение пройти тест
+      console.log('📋 No results found, showing onboarding prompt')
       setMatchedRoles([])
       setLoading(false)
     } catch (err) {

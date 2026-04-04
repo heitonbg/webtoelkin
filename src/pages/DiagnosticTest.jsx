@@ -28,34 +28,13 @@ export default function DiagnosticTest() {
 
   async function checkExistingResults() {
     try {
-      // Проверяем профиль в БД
-      const profileData = await api.getProfile()
-      if (profileData.exists) {
-        const profile = profileData.profile || {}
-        const hasField = profile.field && profile.field.trim().length > 0
-        const hasInterests = (profile.interests || []).length > 0
-        const hasSkills = (profile.skills || []).length > 0
-        const hasGoals = (profile.career_goals || []).length > 0
-        
-        // Если профиль заполнен — значит тест уже пройден
-        if (hasField || hasInterests || hasSkills || hasGoals) {
-          console.log('✅ User already has profile data, loading results...')
-          // Пробуем загрузить результаты через quick match
-          try {
-            const rolesResult = await api.quickMatch()
-            if (rolesResult.roles && rolesResult.roles.length > 0) {
-              // Показываем результаты как будто тест пройден
-              setResults({
-                top_categories: [],
-                recommended_roles: rolesResult.roles,
-              })
-              setLoading(false)
-              return
-            }
-          } catch (e) {
-            console.warn('Failed to load roles, showing test:', e)
-          }
-        }
+      // Сначала проверяем БД — есть ли сохранённые результаты диагностики
+      const dbResult = await api.getDiagnosticResult()
+      if (dbResult.exists && dbResult.result?.recommended_roles?.length > 0) {
+        console.log('✅ Found diagnostic results in DB')
+        setResults(dbResult.result)
+        setLoading(false)
+        return
       }
       
       // Проверяем localStorage как fallback
@@ -64,7 +43,7 @@ export default function DiagnosticTest() {
         try {
           const parsed = JSON.parse(storedResults)
           if (parsed.recommended_roles && parsed.recommended_roles.length > 0) {
-            console.log('✅ Found existing diagnostic results in localStorage')
+            console.log('✅ Found diagnostic results in localStorage')
             setResults(parsed)
             setLoading(false)
             return
