@@ -34,45 +34,41 @@ export default function CareerPath() {
         }
       }
 
-      // Если нет результатов — проверяем профиль в БД
+      // Проверяем профиль в БД
       const profileData = await api.getProfile()
-      if (!profileData.exists) {
-        navigate('/diagnostic')
-        return
-      }
+      if (profileData.exists) {
+        const profile = profileData.profile || {}
+        const hasField = profile.field && profile.field.trim().length > 0
+        const hasInterests = (profile.interests || []).length > 0
+        const hasSkills = (profile.skills || []).length > 0
+        const hasGoals = (profile.career_goals || []).length > 0
 
-      const profile = profileData.profile || {}
-      const hasField = profile.field && profile.field.trim().length > 0
-      const hasInterests = (profile.interests || []).length > 0
-      const hasSkills = (profile.skills || []).length > 0
-      const hasGoals = (profile.career_goals || []).length > 0
-
-      if (!hasField && !hasInterests && !hasSkills && !hasGoals) {
-        // Если есть результаты в localStorage — показываем их
-        if (storedResults) {
-          // Пытаемся загрузить роли через API
+        if (hasField || hasInterests || hasSkills || hasGoals) {
+          // Профиль заполнен — загружаем роли
           const rolesResult = await api.matchRoles()
           setMatchedRoles(rolesResult.roles || [])
-        } else {
-          navigate('/diagnostic')
+          const stats = await api.getMyScenarioStats()
+          setScenarioStats(stats.results || [])
+
+          try {
+            const streak = await api.getDailyStreak()
+            setDailyStreak(streak)
+          } catch (e) {
+            // ignore
+          }
+
+          setLoading(false)
           return
         }
       }
 
-      const rolesResult = await api.matchRoles()
-      setMatchedRoles(rolesResult.roles || [])
-      const stats = await api.getMyScenarioStats()
-      setScenarioStats(stats.results || [])
-
-      try {
-        const streak = await api.getDailyStreak()
-        setDailyStreak(streak)
-      } catch (e) {
-        console.warn('Daily streak failed:', e)
-      }
+      // Профиль пустой — показываем приглашение пройти тест
+      console.log('📋 Profile empty, showing onboarding prompt')
+      setMatchedRoles([])
+      setLoading(false)
     } catch (err) {
       console.error('CareerPath error:', err)
-    } finally {
+      setMatchedRoles([])
       setLoading(false)
     }
   }
@@ -139,6 +135,24 @@ export default function CareerPath() {
       </div>
 
       <div style={{ padding: 16 }}>
+
+        {/* ===== ПРИГЛАШЕНИЕ ПРОЙТИ ТЕСТ ===== */}
+        {matchedRoles.length === 0 && (
+          <div className="card" style={{ textAlign: 'center', padding: 32 }}>
+            <div style={{ fontSize: '3rem', marginBottom: 12 }}>🧠</div>
+            <h2 style={{ color: 'var(--dark-text)', marginBottom: 8 }}>Пройди диагностику</h2>
+            <p style={{ color: 'var(--dark-text-muted)', marginBottom: 20, fontSize: '0.9rem' }}>
+              Ответь на 10 вопросов и мы подберём подходящие профессии из 197 доступных
+            </p>
+            <button
+              className="btn btn-primary"
+              onClick={() => navigate('/diagnostic')}
+              style={{ width: '100%' }}
+            >
+              Начать тест →
+            </button>
+          </div>
+        )}
 
         {/* ===== ПРОГРЕСС ===== */}
         <div className="card">
