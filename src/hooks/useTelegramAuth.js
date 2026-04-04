@@ -27,7 +27,35 @@ export function useTelegramAuth() {
       setLoading(true)
       setError(null)
 
-      // Пробуем строгую валидацию
+      // Проверяем есть ли уже сохраненный telegram_id
+      const savedId = localStorage.getItem('telegram_id')
+      
+      // Если уже есть сохраненный ID — загружаем профиль напрямую
+      if (savedId) {
+        try {
+          const profileData = await api.getProfile()
+          if (profileData.exists) {
+            setProfile({
+              telegram_id: savedId,
+              username: profileData.telegram?.telegram_username,
+              first_name: profileData.telegram?.telegram_first_name,
+              last_name: profileData.telegram?.telegram_last_name,
+              photo_url: profileData.telegram?.telegram_photo_url,
+              language_code: profileData.telegram?.telegram_language_code,
+              is_premium: false,
+              is_new_user: false,
+            })
+            setIsAuthenticated(true)
+            console.log('✅ Loaded saved profile:', savedId)
+            setLoading(false)
+            return
+          }
+        } catch (err) {
+          console.warn('Saved profile not found, will create new one')
+        }
+      }
+
+      // Пробуем авторизацию через Telegram
       let authResult
       try {
         authResult = await api.telegramAuth(true)
@@ -55,7 +83,7 @@ export function useTelegramAuth() {
     } catch (err) {
       console.error('❌ Telegram auth error:', err)
       setError(err.message)
-      
+
       // Fallback — используем demo_user или telegram_id из localStorage
       const fallbackId = localStorage.getItem('telegram_id') || getTelegramId()
       setProfile({
