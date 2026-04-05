@@ -1,10 +1,18 @@
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
-// Получаем telegram_id из Telegram WebApp
+// Получаем telegram_id из Telegram WebApp или localStorage
 function getTelegramId() {
+  // Сначала проверяем Telegram WebApp
   if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe) {
-    return String(window.Telegram.WebApp.initDataUnsafe.user?.id || 'demo_user');
+    const userId = window.Telegram.WebApp.initDataUnsafe.user?.id;
+    if (userId) return String(userId);
   }
+  
+  // Если нет — используем сохранённый в localStorage
+  const savedId = localStorage.getItem('telegram_id');
+  if (savedId) return savedId;
+  
+  // Fallback
   return 'demo_user';
 }
 
@@ -93,7 +101,7 @@ export const api = {
     if (!initData) {
       return { status: 'ok', telegram_id: getTelegramId(), updated: false };
     }
-    
+
     return request('/telegram/sync-profile', {
       method: 'POST',
       body: JSON.stringify({
@@ -101,6 +109,14 @@ export const api = {
         strict_validation: true,
       }),
     });
+  },
+
+  /**
+   * Получить аватар пользователя (base64 data URI).
+   * Скачивает фото из Telegram через Bot API.
+   */
+  async getTelegramAvatar() {
+    return request(`/telegram/avatar/${getTelegramId()}`);
   },
 
   // User
