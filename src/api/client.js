@@ -1,4 +1,4 @@
-const API_BASE = 'http://a37788-0f3d.e.d-f.pw:8000/api';
+const API_BASE = 'https://elkinbot-iwrawww.amvera.io/api';
 
 // Получаем telegram_id из Telegram WebApp или sessionStorage
 function getTelegramId() {
