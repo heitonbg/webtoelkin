@@ -1,6 +1,6 @@
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
-// Получаем telegram_id из Telegram WebApp или localStorage
+// Получаем telegram_id из Telegram WebApp или sessionStorage
 function getTelegramId() {
   // Сначала проверяем Telegram WebApp
   if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe) {
@@ -8,11 +8,10 @@ function getTelegramId() {
     if (userId) return String(userId);
   }
   
-  // Если нет — используем сохранённый в localStorage
-  const savedId = localStorage.getItem('telegram_id');
+  // Fallback из sessionStorage (текущая сессия)
+  const savedId = sessionStorage.getItem('telegram_id');
   if (savedId) return savedId;
   
-  // Fallback
   return 'demo_user';
 }
 
