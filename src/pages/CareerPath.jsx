@@ -17,10 +17,10 @@ export default function CareerPath() {
 
   async function loadData() {
     try {
-      // 1. Сначала проверяем БД — есть ли сохранённые результаты диагностики
+      // Загружаем результаты диагностики из БД
       const dbResult = await api.getDiagnosticResult()
       if (dbResult.exists && dbResult.result?.recommended_roles?.length > 0) {
-        console.log('✅ Found diagnostic results in DB, showing them')
+        console.log('✅ Found diagnostic results in DB')
         setMatchedRoles(dbResult.result.recommended_roles)
         try {
           const stats = await api.getMyScenarioStats()
@@ -30,25 +30,8 @@ export default function CareerPath() {
         return
       }
 
-      // 2. Проверяем localStorage как fallback
-      const storedResults = localStorage.getItem('diagnostic_results')
-      if (storedResults) {
-        try {
-          const parsed = JSON.parse(storedResults)
-          if (parsed.recommended_roles && parsed.recommended_roles.length > 0) {
-            setMatchedRoles(parsed.recommended_roles)
-            const stats = await api.getMyScenarioStats()
-            setScenarioStats(stats.results || [])
-            setLoading(false)
-            return
-          }
-        } catch (e) {
-          console.error('Failed to parse diagnostic results:', e)
-        }
-      }
-
-      // 3. Ничего нет — показываем приглашение пройти тест
-      console.log('📋 No results found, showing onboarding prompt')
+      // Нет результатов — показываем приглашение
+      console.log('📋 No results in DB, showing onboarding prompt')
       setMatchedRoles([])
       setLoading(false)
     } catch (err) {

@@ -28,7 +28,7 @@ export default function DiagnosticTest() {
 
   async function checkExistingResults() {
     try {
-      // Сначала проверяем БД — есть ли сохранённые результаты диагностики
+      // Проверяем БД — есть ли сохранённые результаты диагностики
       const dbResult = await api.getDiagnosticResult()
       if (dbResult.exists && dbResult.result?.recommended_roles?.length > 0) {
         console.log('✅ Found diagnostic results in DB')
@@ -36,26 +36,10 @@ export default function DiagnosticTest() {
         setLoading(false)
         return
       }
-      
-      // Проверяем localStorage как fallback
-      const storedResults = localStorage.getItem('diagnostic_results')
-      if (storedResults) {
-        try {
-          const parsed = JSON.parse(storedResults)
-          if (parsed.recommended_roles && parsed.recommended_roles.length > 0) {
-            console.log('✅ Found diagnostic results in localStorage')
-            setResults(parsed)
-            setLoading(false)
-            return
-          }
-        } catch (e) {
-          console.error('Failed to parse stored results:', e)
-        }
-      }
     } catch (err) {
       console.error('Failed to check existing results:', err)
     }
-    
+
     // Нет результатов — запускаем тест
     loadQuestions()
   }
@@ -114,7 +98,6 @@ export default function DiagnosticTest() {
     try {
       const result = await api.runDiagnostic(finalAnswers)
       setResults(result)
-      localStorage.setItem('diagnostic_results', JSON.stringify(result))
 
       // Сохраняем профиль в БД
       if (profile) {
@@ -200,8 +183,8 @@ export default function DiagnosticTest() {
                 key={role.role_id}
                 onClick={() => {
                   console.log('🎯 Navigating to scenario-runner with role:', role)
-                  // Сохраняем роль в localStorage как fallback
-                  localStorage.setItem('pending_scenario_roles', JSON.stringify([role]))
+                  // Сохраняем роль в sessionStorage
+                  sessionStorage.setItem('pending_scenario_roles', JSON.stringify([role]))
                   navigate('/scenario-runner', { state: { roles: [role] } })
                 }}
                 style={{

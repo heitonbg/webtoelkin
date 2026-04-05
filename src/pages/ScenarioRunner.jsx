@@ -6,20 +6,20 @@ export default function ScenarioRunner() {
   const navigate = useNavigate()
   const location = useLocation()
   
-  // Получаем роли из state или из localStorage (fallback)
+  // Получаем роли из state или из sessionStorage (fallback)
   const [roles, setRoles] = useState(() => {
     const stateRoles = location.state?.roles || []
     if (stateRoles.length === 0) {
-      // Пробуем загрузить из localStorage
+      // Пробуем загрузить из sessionStorage
       try {
-        const stored = localStorage.getItem('pending_scenario_roles')
+        const stored = sessionStorage.getItem('pending_scenario_roles')
         if (stored) {
           const parsed = JSON.parse(stored)
-          console.log('📦 Loaded roles from localStorage:', parsed)
+          console.log('📦 Loaded roles from sessionStorage:', parsed)
           return parsed
         }
       } catch (e) {
-        console.error('Failed to load roles from localStorage:', e)
+        console.error('Failed to load roles from sessionStorage:', e)
       }
     }
     return stateRoles
@@ -72,8 +72,8 @@ export default function ScenarioRunner() {
       }
 
       console.log('✅ Loaded scenarios:', loaded.map(s => ({ role_id: s.role_id, questions: s.questions.length })))
-      // Очищаем localStorage после успешной загрузки
-      localStorage.removeItem('pending_scenario_roles')
+      // Очищаем sessionStorage после успешной загрузки
+      sessionStorage.removeItem('pending_scenario_roles')
 
       setScenarios(loaded)
 

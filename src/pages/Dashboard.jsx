@@ -334,15 +334,13 @@ export default function Dashboard() {
           )}
 
           {/* Кнопки */}
-          <div style={{ display: 'flex', gap: 8, marginTop: 16 }}>
-            <button
-              className="btn btn-secondary"
-              style={{ flex: 1, fontSize: '0.8rem' }}
-              onClick={() => navigate('/diagnostic')}
-            >
-              ✏️ Пройти диагностику
-            </button>
-          </div>
+          <button
+            className="btn btn-secondary"
+            style={{ width: '100%', marginTop: 16, fontSize: '0.8rem' }}
+            onClick={() => navigate('/diagnostic')}
+          >
+            ✏️ Пройти диагностику
+          </button>
         </div>
 
         {/* ===== РЕКОМЕНДАЦИИ ===== */}
