@@ -43,7 +43,7 @@ export default function Dashboard() {
         if (profileData.telegram) {
           setTelegramData(profileData.telegram)
           
-          // Если нет photo_url — загружаем через Bot API
+          // Если нет фото — загружаем через Bot API (base64)
           if (!profileData.telegram.telegram_photo_url) {
             try {
               const avatarData = await api.getTelegramAvatar()
@@ -51,7 +51,7 @@ export default function Dashboard() {
                 setTelegramData(prev => ({ ...prev, telegram_photo_url: avatarData.photo_url }))
               }
             } catch (e) {
-              console.warn('Failed to load avatar from Telegram API')
+              console.warn('Failed to load avatar')
             }
           }
         }
@@ -376,12 +376,9 @@ export default function Dashboard() {
                 boxShadow: '0 4px 20px rgba(227,6,17,0.3)',
               }}>
                 <img
-                  src={telegramData?.telegram_photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent((telegramData?.telegram_first_name || 'U') + '+' + (telegramData?.telegram_last_name || ''))}&background=E30611&color=fff&size=160&bold=true`}
+                  src={telegramData?.telegram_photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent((telegramData?.telegram_first_name || 'U') + ' ' + (telegramData?.telegram_last_name || ''))}&background=E30611&color=fff&size=160&bold=true`}
                   alt="Avatar"
                   style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover', border: '3px solid #1A1A1A' }}
-                  onError={(e) => {
-                    e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(telegramData?.telegram_first_name || 'U')}&background=E30611&color=fff&size=160&bold=true`
-                  }}
                 />
               </div>
               {telegramData?.telegram_language_code && (
